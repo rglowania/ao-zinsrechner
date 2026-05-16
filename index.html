@@ -273,6 +273,31 @@ footer{
   letter-spacing:.5px;color:var(--text-muted);
 }
 
+/* ── Vorschlag-Chips ────────────────────────────────────────── */
+.vorschlag-label{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:8px;
+}
+.vorschlag-row{display:flex;flex-wrap:wrap;gap:6px;}
+.vorschlag-chip{
+  padding:7px 12px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;letter-spacing:.3px;
+  color:var(--text);cursor:pointer;
+  transition:all .15s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.vorschlag-chip:hover{
+  border-color:var(--accent);color:var(--accent);
+}
+.vorschlag-chip.active{
+  border-color:var(--accent);background:var(--accent-dim);color:var(--accent);
+}
+.vorschlag-chip strong{color:var(--accent);font-weight:600;}
+
 /* ── Responsive ─────────────────────────────────────────────── */
 @media(max-width:600px){
   .form-grid{grid-template-columns:1fr;}
@@ -319,7 +344,7 @@ footer{
       <div class="form-grid">
         <div class="form-group">
           <label>Unterschiedsbetrag (€)</label>
-          <input type="number" id="s233a-betrag" placeholder="z. B. 5000" step="0.01">
+          <input type="text" inputmode="decimal" id="s233a-betrag" placeholder="z. B. 5.000,00">
           <span class="hint">+ Nachzahlung / − Erstattung</span>
         </div>
         <div class="form-group">
@@ -331,7 +356,7 @@ footer{
         <div class="form-group">
           <label>Zinsbeginn</label>
           <input type="date" id="s233a-beginn">
-          <span class="hint" id="s233a-karenz-hint">Aus VZ berechnet oder manuell</span>
+          <span class="hint" id="s233a-karenz-hint">VZ wählen oder manuell</span>
         </div>
         <div class="form-group">
           <label>Zinsende</label>
@@ -339,10 +364,11 @@ footer{
           <span class="hint">Tag der Zahlung / Fälligkeit</span>
         </div>
       </div>
+      <div id="s233a-vorschlaege" style="display:none;margin-bottom:18px;"></div>
       <button class="btn" onclick="calc233a()">Berechnen</button>
       <div id="s233a-result"></div>
       <div class="info-box">
-        <strong>Karenzzeit:</strong> Der Zinslauf beginnt 15 Monate nach Ablauf des Veranlagungszeitraums – bei Kalenderjahr am 1. April des übernächsten Jahres (§ 233a Abs. 2 AO).
+        <strong>Karenzzeit:</strong> Der Zinslauf beginnt im Regelfall 15 Monate nach Ablauf des Veranlagungszeitraums (1. April des übernächsten Jahres, § 233a Abs. 2 S. 1 AO). Bei überwiegenden Einkünften aus Land-/Forstwirtschaft 23 Monate (1. Dezember, § 233a Abs. 2 S. 2 AO). Für VZ 2019–2024 gelten verlängerte Karenzzeiten nach Art. 97 § 36 EGAO (Corona-Sonderregelung).
         Bemessungsgrundlage ist der <em>Unterschiedsbetrag</em> (festgesetzte Steuer abzgl. angerechnete Vorauszahlungen und Steuerabzugsbeträge).
         Zinssatz: 0,50 %/Monat bis 31.12.2018 · 0,15 %/Monat ab 01.01.2019 (§ 238 Abs. 1a AO).
       </div>
@@ -357,7 +383,7 @@ footer{
       <div class="form-grid">
         <div class="form-group">
           <label>Gestundeter Betrag (€)</label>
-          <input type="number" id="s234-betrag" placeholder="z. B. 10 000" step="0.01">
+          <input type="text" inputmode="decimal" id="s234-betrag" placeholder="z. B. 10.000,00">
         </div>
         <div class="form-group">
           <label>Stundungsbeginn</label>
@@ -386,7 +412,7 @@ footer{
       <div class="form-grid">
         <div class="form-group">
           <label>Hinterzogener Betrag (€)</label>
-          <input type="number" id="s235-betrag" placeholder="z. B. 8 000" step="0.01">
+          <input type="text" inputmode="decimal" id="s235-betrag" placeholder="z. B. 8.000,00">
         </div>
         <div class="form-group">
           <label>Zinsbeginn</label>
@@ -417,7 +443,7 @@ footer{
       <div class="form-grid">
         <div class="form-group">
           <label>Erstattungsbetrag (€)</label>
-          <input type="number" id="s236-betrag" placeholder="z. B. 3 000" step="0.01">
+          <input type="text" inputmode="decimal" id="s236-betrag" placeholder="z. B. 3.000,00">
         </div>
         <div class="form-group">
           <label>Zinsbeginn</label>
@@ -448,7 +474,7 @@ footer{
       <div class="form-grid">
         <div class="form-group">
           <label>Ausgesetzter Betrag (€)</label>
-          <input type="number" id="s237-betrag" placeholder="z. B. 6 000" step="0.01">
+          <input type="text" inputmode="decimal" id="s237-betrag" placeholder="z. B. 6.000,00">
         </div>
         <div class="form-group">
           <label>Beginn der AdV</label>
@@ -478,7 +504,7 @@ footer{
       <div class="form-grid">
         <div class="form-group">
           <label>Festgesetzte Steuer (€)</label>
-          <input type="number" id="s152-steuer" placeholder="z. B. 12 000" step="0.01">
+          <input type="text" inputmode="decimal" id="s152-steuer" placeholder="z. B. 12.000,00">
           <span class="hint">Steuer laut Bescheid (ohne Zinsen)</span>
         </div>
         <div class="form-group">
@@ -522,7 +548,7 @@ footer{
         <div class="form-grid">
           <div class="form-group">
             <label>Zuschlagsatz (%) – max. 10 %</label>
-            <input type="number" id="s152-satz" placeholder="z. B. 5" min="0" max="10" step="0.1">
+            <input type="text" inputmode="decimal" id="s152-satz" placeholder="z. B. 5">
             <span class="hint">Im Ermessen des Finanzamts; max. 10 % der Steuer</span>
           </div>
         </div>
@@ -547,7 +573,7 @@ footer{
       <div class="form-grid">
         <div class="form-group">
           <label>Fälliger Steuerbetrag (€)</label>
-          <input type="number" id="s240-betrag" placeholder="z. B. 4 500" step="0.01">
+          <input type="text" inputmode="decimal" id="s240-betrag" placeholder="z. B. 4.500,00">
           <span class="hint">Wird auf volle 50 € abgerundet</span>
         </div>
         <div class="form-group">
@@ -570,11 +596,11 @@ footer{
     </div>
   </div>
 
-  <p class="disclaimer">Alle Berechnungen sind Näherungswerte auf Basis der angegebenen Rechtsgrundlagen (AO). Individuelle Sachverhalte und Ermessensentscheidungen der Finanzbehörde bleiben unberücksichtigt. Kein Ersatz für individuelle Steuer- oder Rechtsberatung · Alle Angaben ohne Gewähr · Stand: April 2026</p>
+  <p class="disclaimer">Alle Berechnungen sind Näherungswerte auf Basis der angegebenen Rechtsgrundlagen (AO). Individuelle Sachverhalte und Ermessensentscheidungen der Finanzbehörde bleiben unberücksichtigt. Kein Ersatz für individuelle Steuer- oder Rechtsberatung · Alle Angaben ohne Gewähr</p>
 
 </div><!-- /container -->
 
-<footer>© Robin Glowania · Zuletzt aktualisiert: 06.05.2026</footer>
+<footer>© Robin Glowania · Zuletzt aktualisiert: 17.05.2026</footer>
 
 <script>
 /* ─────────────────────────────────────────────────────────────
@@ -660,6 +686,42 @@ function parseDate(s) {
   const [y, m, d] = s.split('-').map(Number);
   return new Date(y, m - 1, d);
 }
+function parseDe(s) {
+  if (s == null || s === '') return NaN;
+  const cleaned = s.toString().replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  return parseFloat(cleaned);
+}
+function fmtInput(value) {
+  if (!value) return '';
+  let cleaned = value.toString().replace(/[^\d,\-]/g, '');
+  let neg = '';
+  if (cleaned.startsWith('-')) { neg = '-'; cleaned = cleaned.substring(1); }
+  cleaned = cleaned.replace(/-/g, '');
+  const firstComma = cleaned.indexOf(',');
+  if (firstComma !== -1) {
+    cleaned = cleaned.substring(0, firstComma + 1) + cleaned.substring(firstComma + 1).replace(/,/g, '');
+  }
+  const parts = cleaned.split(',');
+  let intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  let result = neg + intPart;
+  if (parts.length > 1) result += ',' + parts[1].substring(0, 2);
+  return result;
+}
+(function attachNumberFormat() {
+  const ids = ['s233a-betrag','s234-betrag','s235-betrag','s236-betrag','s237-betrag','s152-steuer','s152-satz','s240-betrag'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', function() {
+      const cursorPos = el.selectionStart;
+      const oldLen = el.value.length;
+      el.value = fmtInput(el.value);
+      const newLen = el.value.length;
+      const newPos = Math.max(0, cursorPos + (newLen - oldLen));
+      try { el.setSelectionRange(newPos, newPos); } catch(e) {}
+    });
+  });
+})();
 
 /* ─────────────────────────────────────────────────────────────
    CORE: volle Monate (§ 238 Abs. 1 S. 2 AO)
@@ -738,8 +800,27 @@ function renderZinsen(targetId, betrag, start, end, isErstattung) {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   §233a – Karenzzeit-Helfer
+   §233a – Zinsbeginn-Vorschläge
+   Quelle: § 233a Abs. 2 AO + Art. 97 § 36 EGAO (AEAO zu § 233a)
 ───────────────────────────────────────────────────────────── */
+const ZINSLAUF_233a_SONDER = {
+  2019: { allg: '2021-10-01', allgMon: 21, bes: '2022-05-01', besMon: 28 },
+  2020: { allg: '2022-10-01', allgMon: 21, bes: '2023-06-01', besMon: 29 },
+  2021: { allg: '2023-10-01', allgMon: 21, bes: '2024-06-01', besMon: 29 },
+  2022: { allg: '2024-09-01', allgMon: 20, bes: '2025-05-01', besMon: 28 },
+  2023: { allg: '2025-07-01', allgMon: 18, bes: '2026-03-01', besMon: 26 },
+  2024: { allg: '2026-06-01', allgMon: 17, bes: '2027-02-01', besMon: 25 }
+};
+function s233aZinsbeginn(vz) {
+  if (ZINSLAUF_233a_SONDER[vz]) return { ...ZINSLAUF_233a_SONDER[vz], sonder: true };
+  // Regelfall: 15 / 23 Monate
+  return {
+    allg: (vz + 2) + '-04-01', allgMon: 15,
+    bes:  (vz + 2) + '-12-01', besMon:  23,
+    sonder: false
+  };
+}
+
 (function initVZSelect() {
   const sel  = document.getElementById('s233a-vz');
   const year = new Date().getFullYear();
@@ -749,14 +830,48 @@ function renderZinsen(targetId, betrag, start, end, isErstattung) {
   }
 })();
 
+function setS233aBeginn(iso, type) {
+  document.getElementById('s233a-beginn').value = iso;
+  document.querySelectorAll('#s233a-vorschlaege .vorschlag-chip').forEach(c => c.classList.remove('active'));
+  const el = document.querySelector('#s233a-vorschlaege .vorschlag-chip[data-type="' + type + '"]');
+  if (el) el.classList.add('active');
+}
+
 function s233aKarenz() {
-  const vz   = parseInt(document.getElementById('s233a-vz').value);
-  const hint = document.getElementById('s233a-karenz-hint');
-  if (!vz) { hint.textContent = 'Aus VZ berechnet oder manuell'; return; }
-  const karenzEnde   = new Date(vz + 2, 2, 31);
-  const zinsbeginnDt = new Date(vz + 2, 3, 1);
-  document.getElementById('s233a-beginn').value = zinsbeginnDt.toISOString().slice(0, 10);
-  hint.textContent = `Karenzzeit endet: ${fmtDate(karenzEnde)} → Zinslauf ab ${fmtDate(zinsbeginnDt)}`;
+  const vzRaw = document.getElementById('s233a-vz').value;
+  const cont  = document.getElementById('s233a-vorschlaege');
+  const hint  = document.getElementById('s233a-karenz-hint');
+
+  if (!vzRaw) {
+    cont.style.display = 'none';
+    cont.innerHTML = '';
+    hint.textContent = 'VZ wählen oder manuell';
+    return;
+  }
+
+  const vz = parseInt(vzRaw);
+  const d  = s233aZinsbeginn(vz);
+  const rechtsgrundlage = d.sonder
+    ? '§ 233a Abs. 2 AO i. V. m. Art. 97 § 36 EGAO (Corona-Sonderregelung)'
+    : '§ 233a Abs. 2 AO';
+
+  cont.innerHTML =
+    '<div class="vorschlag-label">Vorschläge Zinsbeginn · ' + rechtsgrundlage + '</div>' +
+    '<div class="vorschlag-row">' +
+      '<button type="button" class="vorschlag-chip active" data-type="allg" ' +
+        'onclick="setS233aBeginn(\'' + d.allg + '\',\'allg\')">' +
+        '<strong>Regelfall</strong> · ' + d.allgMon + ' Mt. · ab ' + fmtDate(parseDate(d.allg)) +
+      '</button>' +
+      '<button type="button" class="vorschlag-chip" data-type="bes" ' +
+        'onclick="setS233aBeginn(\'' + d.bes + '\',\'bes\')">' +
+        '<strong>Land-/Forstwirtschaft</strong> · ' + d.besMon + ' Mt. · ab ' + fmtDate(parseDate(d.bes)) +
+      '</button>' +
+    '</div>';
+  cont.style.display = 'block';
+
+  // Regelfall als Voreinstellung übernehmen
+  document.getElementById('s233a-beginn').value = d.allg;
+  hint.textContent = 'VZ ' + vz + (d.sonder ? ' · Corona-Sonderregel.' : '');
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -775,35 +890,35 @@ function validate(fields, resultId) {
    CALCULATORS
 ───────────────────────────────────────────────────────────── */
 function calc233a() {
-  const betrag = parseFloat(document.getElementById('s233a-betrag').value);
+  const betrag = parseDe(document.getElementById('s233a-betrag').value);
   const start  = parseDate(document.getElementById('s233a-beginn').value);
   const end    = parseDate(document.getElementById('s233a-ende').value);
   if (!validate([betrag, start, end], 's233a-result')) return;
   renderZinsen('s233a-result', betrag, start, end, betrag < 0);
 }
 function calc234() {
-  const betrag = parseFloat(document.getElementById('s234-betrag').value);
+  const betrag = parseDe(document.getElementById('s234-betrag').value);
   const start  = parseDate(document.getElementById('s234-beginn').value);
   const end    = parseDate(document.getElementById('s234-ende').value);
   if (!validate([betrag, start, end], 's234-result')) return;
   renderZinsen('s234-result', betrag, start, end, false);
 }
 function calc235() {
-  const betrag = parseFloat(document.getElementById('s235-betrag').value);
+  const betrag = parseDe(document.getElementById('s235-betrag').value);
   const start  = parseDate(document.getElementById('s235-beginn').value);
   const end    = parseDate(document.getElementById('s235-ende').value);
   if (!validate([betrag, start, end], 's235-result')) return;
   renderZinsen('s235-result', betrag, start, end, false);
 }
 function calc236() {
-  const betrag = parseFloat(document.getElementById('s236-betrag').value);
+  const betrag = parseDe(document.getElementById('s236-betrag').value);
   const start  = parseDate(document.getElementById('s236-beginn').value);
   const end    = parseDate(document.getElementById('s236-ende').value);
   if (!validate([betrag, start, end], 's236-result')) return;
   renderZinsen('s236-result', betrag, start, end, true);
 }
 function calc237() {
-  const betrag = parseFloat(document.getElementById('s237-betrag').value);
+  const betrag = parseDe(document.getElementById('s237-betrag').value);
   const start  = parseDate(document.getElementById('s237-beginn').value);
   const end    = parseDate(document.getElementById('s237-ende').value);
   if (!validate([betrag, start, end], 's237-result')) return;
@@ -811,7 +926,7 @@ function calc237() {
 }
 
 function calc152() {
-  const steuer = parseFloat(document.getElementById('s152-steuer').value);
+  const steuer = parseDe(document.getElementById('s152-steuer').value);
   const frist  = parseDate(document.getElementById('s152-frist').value);
   const abgabe = parseDate(document.getElementById('s152-abgabe').value);
   const el     = document.getElementById('s152-result');
@@ -845,7 +960,7 @@ function calc152() {
             + ` (0,25 % von ${fmtEuro(steuer)}, mind. ${fmtEuro(minPerMonth)}/Monat · ${artLabel})`
             + (raw > 25000 ? ' → gekappt auf max. 25.000 €' : '');
   } else {
-    const satz = parseFloat(document.getElementById('s152-satz').value) / 100;
+    const satz = parseDe(document.getElementById('s152-satz').value) / 100;
     if (isNaN(satz) || satz <= 0) {
       el.innerHTML = '<div class="alert-warn">⚠ Bitte einen Zuschlagsatz eingeben.</div>';
       return;
@@ -876,7 +991,7 @@ function calc152() {
 }
 
 function calc240() {
-  const betrag  = parseFloat(document.getElementById('s240-betrag').value);
+  const betrag  = parseDe(document.getElementById('s240-betrag').value);
   const faellig = parseDate(document.getElementById('s240-faellig').value);
   const zahlung = parseDate(document.getElementById('s240-zahlung').value);
   const el      = document.getElementById('s240-result');
